@@ -148,7 +148,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 87f1af2d57711fc4b874894026264004, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObstacleSpawner
-  obstacleprefab: {fileID: 2448178694710079174, guid: 78d37f2af09ad6c4e8e605b6f5e4d84c, type: 3}
+  obstacleprefab: {fileID: 904299116161025714, guid: 5dc54baeac373fc4d89ea5111e454c5e, type: 3}
   st: 1
 --- !u!4 &294115793
 Transform:
