@@ -7,6 +7,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float movespeed = 5f;
     [SerializeField] float xclamp = 3f;
      [SerializeField] float zclamp = 2f;
+    [SerializeField] string obstacleTag = "Obstacle";
+
     Vector2 movement;
     Rigidbody rigidbody;
 
@@ -32,5 +34,18 @@ public class PlayerController : MonoBehaviour
         newposition.x = Mathf.Clamp(newposition.x, -xclamp, xclamp);
         newposition.z = Mathf.Clamp(newposition.z, -zclamp, zclamp);
         rigidbody.MovePosition(newposition);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (!string.IsNullOrEmpty(obstacleTag) && collision.collider.CompareTag(obstacleTag))
+        {
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.StopScoring();
+            }
+
+            enabled = false;
+        }
     }
 }

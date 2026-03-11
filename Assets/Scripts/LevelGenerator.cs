@@ -7,14 +7,23 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] int startingchunksamount = 12;
     [SerializeField] Transform chunkParent;
 
+    [SerializeField] Transform cameraTransform;
+
     [SerializeField] float chunklength = 10f;
 
     [SerializeField] float movespeed = 8f;
+
+    [SerializeField] int pointsPerChunk = 5;
 
     List<GameObject> chunks = new List<GameObject>();
 
     void Start()
     {
+        if (cameraTransform == null && Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+
         Spawnstartingchunks();
 
     }
@@ -54,16 +63,34 @@ public class LevelGenerator : MonoBehaviour
     }
     void movechunks()
     {
-        for (int i = 0;  i < chunks.Count; i++)
+        if (cameraTransform == null)
+        {
+            return;
+        }
+
+        for (int i = chunks.Count - 1; i >= 0; i--)
         {
             GameObject chunk = chunks[i];
-            chunk.transform.Translate(-transform.forward * (movespeed * Time.deltaTime)); 
-            if(chunk.transform.position.z<=Camera.main.transform.position.z-chunklength)
+
+            if (chunk == null)
             {
-                chunks.Remove(chunk);
+                chunks.RemoveAt(i);
+                continue;
+            }
+
+            chunk.transform.Translate(-transform.forward * (movespeed * Time.deltaTime));
+
+            if (chunk.transform.position.z <= cameraTransform.position.z - chunklength)
+            {
+                if (ScoreManager.Instance != null)
+                {
+                    ScoreManager.Instance.AddPoints(pointsPerChunk);
+                }
+
                 Destroy(chunk);
+                chunks.RemoveAt(i);
                 Spawnchunk();
-            }  
+            }
         }
     }
 }
