@@ -169,6 +169,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 2448178694710079174, guid: 78d37f2af09ad6c4e8e605b6f5e4d84c, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3623524415189731430}
+    - targetCorrespondingSourceObject: {fileID: 2448178694710079174, guid: 78d37f2af09ad6c4e8e605b6f5e4d84c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6933574182759404021}
   m_SourcePrefab: {fileID: 100100000, guid: 78d37f2af09ad6c4e8e605b6f5e4d84c, type: 3}
 --- !u!1 &904299116161025714 stripped
 GameObject:
@@ -219,6 +222,22 @@ CapsuleCollider:
   m_Height: 2.8
   m_Direction: 1
   m_Center: {x: 0.5, y: 0, z: 0.5}
+--- !u!114 &6933574182759404021
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 904299116161025714}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d35c38519c78bd4bbf749c972db07e7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleScore
+  pointsForDodge: 1
+  penaltyForHit: 1
+  dodgeZOffset: 1
+  player: {fileID: 0}
 --- !u!4 &4175321934765452162 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1478486766749123574, guid: 78d37f2af09ad6c4e8e605b6f5e4d84c, type: 3}
