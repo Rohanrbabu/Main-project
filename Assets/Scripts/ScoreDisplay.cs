@@ -6,6 +6,10 @@ public class ScoreDisplay : MonoBehaviour
 {
     TMP_Text scoreText;
     ScoreManager scoreManager;
+    [SerializeField] float gameOverDelaySeconds = 60f;
+    [SerializeField] string gameOverMessage = "Game Over";
+    bool gameOver;
+    int finalScore;
 
     void Awake()
     {
@@ -25,6 +29,20 @@ public class ScoreDisplay : MonoBehaviour
     void OnDisable()
     {
         Unbind();
+    }
+    
+    void Update()
+    {
+        if (gameOver) return;
+        if (scoreManager == null) TryBind();
+
+        if (Time.timeSinceLevelLoad >= gameOverDelaySeconds)
+        {
+            gameOver = true;
+            finalScore = scoreManager != null ? scoreManager.Score : 0;
+            Unbind();
+            scoreText.text = $"{gameOverMessage}\nScore: {finalScore}";
+        }
     }
 
     void TryBind()
@@ -50,6 +68,7 @@ public class ScoreDisplay : MonoBehaviour
 
     void HandleScoreChanged(int newScore)
     {
+        if (gameOver) return;
         UpdateScoreText(newScore);
     }
 
