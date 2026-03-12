@@ -235,7 +235,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObstacleScore
   pointsForDodge: 1
-  penaltyForHit: 1
+  penaltyForHit: 100
   dodgeZOffset: 1
   player: {fileID: 0}
 --- !u!4 &4175321934765452162 stripped

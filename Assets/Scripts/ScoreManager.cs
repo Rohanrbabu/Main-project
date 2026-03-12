@@ -7,7 +7,7 @@ public class ScoreManager : MonoBehaviour
 
     [SerializeField] int startingScore = 0;
     [SerializeField] bool clampToZero = true;
-    [SerializeField] float pointsPerSecond = 75f;
+    [SerializeField] float pointsPerSecond = 37.5f;
 
     public int Score { get; private set; }
 

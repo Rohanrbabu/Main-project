@@ -814,6 +814,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScoreManager
   startingScore: 0
   clampToZero: 1
+  pointsPerSecond: 37.5
 --- !u!4 &1407272864
 Transform:
   m_ObjectHideFlags: 0
