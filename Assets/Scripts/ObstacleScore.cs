@@ -7,6 +7,7 @@ public class ObstacleScore : MonoBehaviour
     [SerializeField] float dodgeZOffset = 1f;
     [SerializeField] Transform player;
     [Header("Audio Cue")]
+    [SerializeField] bool enableAudioCue = true;
     [SerializeField] float cueDistance = 8f;
     [SerializeField] float cueFrequency = 880f;
     [SerializeField] float cueDuration = 0.12f;
@@ -19,16 +20,12 @@ public class ObstacleScore : MonoBehaviour
 
     void Awake()
     {
-        if (player == null)
-        {
-            GameObject playerObj = GameObject.FindWithTag("Player");
-            if (playerObj != null)
-            {
-                player = playerObj.transform;
-            }
-        }
-
+        EnsurePlayer();
         AttachRelaysToChildColliders();
+        if (enableAudioCue)
+        {
+            WarmUpAudio();
+        }
     }
 
     public void SetPlayer(Transform playerTransform)
@@ -45,7 +42,10 @@ public class ObstacleScore : MonoBehaviour
         EnsurePlayer();
         if (player == null) return;
 
-        TryPlayCue();
+        if (enableAudioCue)
+        {
+            TryPlayCue();
+        }
 
         if (transform.position.z < player.position.z - dodgeZOffset)
         {
@@ -165,6 +165,15 @@ public class ObstacleScore : MonoBehaviour
         {
             player = controller.transform;
         }
+    }
+
+    void WarmUpAudio()
+    {
+        if (sharedCueClip == null)
+        {
+            sharedCueClip = CreateToneClip(cueFrequency, cueDuration);
+        }
+        GetOrCreateSharedCueSource();
     }
 
     static AudioClip CreateToneClip(float frequency, float durationSeconds)

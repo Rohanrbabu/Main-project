@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
 {
+    public static LevelGenerator Instance { get; private set; }
+
     [SerializeField] GameObject chunkPrefab;
     [SerializeField] int startingchunksamount = 12;
     [SerializeField] Transform chunkParent;
@@ -10,16 +12,30 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] float chunklength = 10f;
 
     [SerializeField] float movespeed = 8f;
+    [SerializeField] float maxSpeed = 18f;
+    [SerializeField] float minSpeed = 4f;
+    [SerializeField] float speedIncreasePerSecond = 0.5f;
+    [SerializeField] float collisionSpeedPenalty = 2f;
+    [SerializeField] float collisionCooldown = 0.2f;
+    float nextCollisionAllowedTime;
 
     List<GameObject> chunks = new List<GameObject>();
 
     void Start()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        Instance = this;
         Spawnstartingchunks();
 
     }
     void Update()
     {
+        IncreaseSpeed();
         movechunks();   
     }
     void Spawnstartingchunks()
@@ -65,5 +81,18 @@ public class LevelGenerator : MonoBehaviour
                 Spawnchunk();
             }  
         }
+    }
+
+    void IncreaseSpeed()
+    {
+        if (speedIncreasePerSecond <= 0f) return;
+        movespeed = Mathf.Min(maxSpeed, movespeed + speedIncreasePerSecond * Time.deltaTime);
+    }
+
+    public void ApplyCollisionPenalty()
+    {
+        if (Time.time < nextCollisionAllowedTime) return;
+        movespeed = Mathf.Max(minSpeed, movespeed - collisionSpeedPenalty);
+        nextCollisionAllowedTime = Time.time + collisionCooldown;
     }
 }

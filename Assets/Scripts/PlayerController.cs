@@ -33,4 +33,26 @@ public class PlayerController : MonoBehaviour
         newposition.z = Mathf.Clamp(newposition.z, -zclamp, zclamp);
         rigidbody.MovePosition(newposition);
     }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        TryApplyCollisionPenalty(collision.gameObject);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        TryApplyCollisionPenalty(other.gameObject);
+    }
+
+    void TryApplyCollisionPenalty(GameObject other)
+    {
+        if (!IsObstacle(other)) return;
+        LevelGenerator.Instance?.ApplyCollisionPenalty();
+    }
+
+    bool IsObstacle(GameObject other)
+    {
+        if (other == null) return false;
+        return other.GetComponentInParent<ObstacleScore>() != null;
+    }
 }

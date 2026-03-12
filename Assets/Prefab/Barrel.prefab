@@ -132,6 +132,11 @@ MonoBehaviour:
   penaltyForHit: 50
   dodgeZOffset: 1
   player: {fileID: 0}
+  enableAudioCue: 0
+  cueDistance: 8
+  cueFrequency: 880
+  cueDuration: 0.12
+  cueVolume: 0.6
 --- !u!1001 &8031045995596346964
 PrefabInstance:
   m_ObjectHideFlags: 0
