@@ -19,7 +19,8 @@ public class ObstacleSpawner : MonoBehaviour
             GameObject obstacleprefab=obstacleprefabs[Random.Range(0,obstacleprefabs.Length)];
             Vector3 spawnposition= new Vector3(Random.Range(-spawnwidth,spawnwidth),transform.position.y,transform.position.z);
             yield return new WaitForSeconds(st);
-            GameObject obstacleInstance = Instantiate(obstacleprefab, transform.position, Random.rotation,obstacleparent);
+            Quaternion spawnRotation = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
+            GameObject obstacleInstance = Instantiate(obstacleprefab, spawnposition, spawnRotation,obstacleparent);
             ObstacleScore obstacleScore = obstacleInstance.GetComponent<ObstacleScore>();
             if (obstacleScore == null)
             {
