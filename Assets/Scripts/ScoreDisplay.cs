@@ -1,5 +1,7 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(TMP_Text))]
 public class ScoreDisplay : MonoBehaviour
@@ -10,6 +12,7 @@ public class ScoreDisplay : MonoBehaviour
     [SerializeField] string gameOverMessage = "Game Over";
     bool gameOver;
     int finalScore;
+    float startTime;
 
     void Awake()
     {
@@ -23,6 +26,7 @@ public class ScoreDisplay : MonoBehaviour
 
     void Start()
     {
+        startTime = Time.unscaledTime;
         UpdateScoreText();
     }
 
@@ -33,15 +37,24 @@ public class ScoreDisplay : MonoBehaviour
     
     void Update()
     {
-        if (gameOver) return;
+        if (gameOver)
+        {
+            if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
+            {
+                Time.timeScale = 1f;
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            }
+            return;
+        }
         if (scoreManager == null) TryBind();
 
-        if (Time.timeSinceLevelLoad >= gameOverDelaySeconds)
+        if (Time.unscaledTime - startTime >= gameOverDelaySeconds)
         {
             gameOver = true;
             finalScore = scoreManager != null ? scoreManager.Score : 0;
             Unbind();
-            scoreText.text = $"{gameOverMessage}\nScore: {finalScore}";
+            scoreText.text = $"{gameOverMessage}\nScore: {finalScore}\nPress R to Retry";
+            Time.timeScale = 0f;
         }
     }
 
