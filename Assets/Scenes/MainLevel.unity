@@ -1190,6 +1190,11 @@ MonoBehaviour:
   chunkParent: {fileID: 1296585848}
   chunklength: 10
   movespeed: 8
+  maxSpeed: 30
+  minSpeed: 6
+  speedIncreasePerSecond: 2
+  collisionSpeedPenalty: 4
+  collisionCooldown: 0.2
 --- !u!4 &1889598523
 Transform:
   m_ObjectHideFlags: 0

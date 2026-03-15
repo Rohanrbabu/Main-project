@@ -12,10 +12,10 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] float chunklength = 10f;
 
     [SerializeField] float movespeed = 8f;
-    [SerializeField] float maxSpeed = 18f;
-    [SerializeField] float minSpeed = 4f;
-    [SerializeField] float speedIncreasePerSecond = 0.5f;
-    [SerializeField] float collisionSpeedPenalty = 2f;
+    [SerializeField] float maxSpeed = 30f;
+    [SerializeField] float minSpeed = 6f;
+    [SerializeField] float speedIncreasePerSecond = 2f;
+    [SerializeField] float collisionSpeedPenalty = 4f;
     [SerializeField] float collisionCooldown = 0.2f;
     float nextCollisionAllowedTime;
 
