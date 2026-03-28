@@ -2,6 +2,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(TMP_Text))]
 public class ScoreDisplay : MonoBehaviour
@@ -13,6 +14,8 @@ public class ScoreDisplay : MonoBehaviour
     bool gameOver;
     int finalScore;
     float startTime;
+    GameObject gameOverPanel;
+    TMP_Text gameOverText;
 
     void Awake()
     {
@@ -53,7 +56,7 @@ public class ScoreDisplay : MonoBehaviour
             gameOver = true;
             finalScore = scoreManager != null ? scoreManager.Score : 0;
             Unbind();
-            scoreText.text = $"{gameOverMessage}\nScore: {finalScore}\nPress R to Retry";
+            ShowGameOverScreen();
             Time.timeScale = 0f;
         }
     }
@@ -100,5 +103,74 @@ public class ScoreDisplay : MonoBehaviour
     void UpdateScoreText(int score)
     {
         scoreText.text = $"Score: {score}";
+    }
+
+    void ShowGameOverScreen()
+    {
+        if (gameOverPanel == null)
+        {
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas == null)
+            {
+                scoreText.text = "Game Over";
+                return;
+            }
+
+            gameOverPanel = new GameObject("GameOverPanel");
+            gameOverPanel.transform.SetParent(canvas.transform, false);
+
+            RectTransform panelRect = gameOverPanel.AddComponent<RectTransform>();
+            panelRect.anchorMin = Vector2.zero;
+            panelRect.anchorMax = Vector2.one;
+            panelRect.offsetMin = Vector2.zero;
+            panelRect.offsetMax = Vector2.zero;
+
+            Image panelImage = gameOverPanel.AddComponent<Image>();
+            panelImage.color = new Color(0f, 0f, 0f, 0.75f);
+
+            GameObject textObj = new GameObject("GameOverText");
+            textObj.transform.SetParent(gameOverPanel.transform, false);
+
+            RectTransform textRect = textObj.AddComponent<RectTransform>();
+            textRect.anchorMin = new Vector2(0.5f, 0.5f);
+            textRect.anchorMax = new Vector2(0.5f, 0.5f);
+            textRect.anchoredPosition = Vector2.zero;
+            textRect.sizeDelta = new Vector2(600f, 400f);
+
+            gameOverText = textObj.AddComponent<TextMeshProUGUI>();
+            gameOverText.font = scoreText.font;
+            gameOverText.fontSize = scoreText.fontSize + 8f;
+            gameOverText.alignment = TextAlignmentOptions.Center;
+            gameOverText.color = Color.white;
+        }
+
+        if (scoreText != null) scoreText.gameObject.SetActive(false);
+
+        string performanceNote = GetPerformanceNote();
+        gameOverText.text =
+            $"{gameOverMessage}\n" +
+            $"Score: {finalScore}\n" +
+            $"Time: {Mathf.CeilToInt(gameOverDelaySeconds)}s\n" +
+            $"Dodged: {GameStats.Instance.ObstaclesDodged}\n" +
+            $"Hit: {GameStats.Instance.ObstaclesHit}\n" +
+            $"Spawned: {GameStats.Instance.ObstaclesSpawned}\n" +
+            $"{performanceNote}\n" +
+            $"Press R to Retry";
+    }
+
+    string GetPerformanceNote()
+    {
+        int spawned = GameStats.Instance.ObstaclesSpawned;
+        int dodged = GameStats.Instance.ObstaclesDodged;
+        int hit = GameStats.Instance.ObstaclesHit;
+
+        if (spawned <= 0) return "Performance: Getting started — you can do this.";
+
+        float dodgeRate = spawned > 0 ? (float)dodged / spawned : 0f;
+
+        if (dodgeRate >= 0.8f && hit <= 2) return "Performance: Focus strong — excellent dodging.";
+        if (dodgeRate >= 0.6f) return "Performance: Steady focus — nice control.";
+        if (dodgeRate >= 0.4f) return "Performance: Warming up — keep the rhythm.";
+        return "Performance: Tough run — try shorter bursts.";
     }
 }

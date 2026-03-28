@@ -49,6 +49,7 @@ public class ObstacleScore : MonoBehaviour
 
         if (transform.position.z < player.position.z - dodgeZOffset)
         {
+            GameStats.Instance?.RegisterDodge();
             resolved = true;
         }
     }
@@ -69,6 +70,7 @@ public class ObstacleScore : MonoBehaviour
         if (!IsPlayerObject(other)) return;
 
         ScoreManager.Instance?.LoseScore(penaltyForHit);
+        GameStats.Instance?.RegisterHit();
         resolved = true;
     }
 
