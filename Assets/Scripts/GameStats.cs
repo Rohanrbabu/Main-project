@@ -19,6 +19,8 @@ public class GameStats : MonoBehaviour
     public int ObstaclesSpawned { get; private set; }
     public int ObstaclesDodged { get; private set; }
     public int ObstaclesHit { get; private set; }
+    public float MaxConcentrationStreak { get; private set; }
+    float currentStreakStartTime;
 
     void Awake()
     {
@@ -29,6 +31,7 @@ public class GameStats : MonoBehaviour
         }
 
         instance = this;
+        currentStreakStartTime = Time.unscaledTime;
     }
 
     public void RegisterSpawn()
@@ -44,5 +47,19 @@ public class GameStats : MonoBehaviour
     public void RegisterHit()
     {
         ObstaclesHit++;
+        UpdateMaxStreak(Time.unscaledTime);
+        currentStreakStartTime = Time.unscaledTime;
+    }
+
+    public float GetMaxStreakAtTime(float now)
+    {
+        UpdateMaxStreak(now);
+        return MaxConcentrationStreak;
+    }
+
+    void UpdateMaxStreak(float now)
+    {
+        float streak = Mathf.Max(0f, now - currentStreakStartTime);
+        if (streak > MaxConcentrationStreak) MaxConcentrationStreak = streak;
     }
 }

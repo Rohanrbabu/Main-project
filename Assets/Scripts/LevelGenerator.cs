@@ -87,6 +87,7 @@ public class LevelGenerator : MonoBehaviour
     {
         if (speedIncreasePerSecond <= 0f) return;
         movespeed = Mathf.Min(maxSpeed, movespeed + speedIncreasePerSecond * Time.deltaTime);
+        if (movespeed < minSpeed) movespeed = minSpeed;
     }
 
     public void ApplyCollisionPenalty()

@@ -19,15 +19,21 @@ public class ScoreDisplay : MonoBehaviour
     GameObject startPanel;
     TMP_Text startText;
     bool gameStarted;
+    InputAction startAction;
+    InputAction retryAction;
 
     void Awake()
     {
         scoreText = GetComponent<TMP_Text>();
+        startAction = new InputAction("Start", InputActionType.Button, "<Keyboard>/space");
+        retryAction = new InputAction("Retry", InputActionType.Button, "<Keyboard>/r");
     }
 
     void OnEnable()
     {
         TryBind();
+        startAction.Enable();
+        retryAction.Enable();
     }
 
     void Start()
@@ -38,6 +44,8 @@ public class ScoreDisplay : MonoBehaviour
 
     void OnDisable()
     {
+        startAction.Disable();
+        retryAction.Disable();
         Unbind();
     }
     
@@ -45,7 +53,7 @@ public class ScoreDisplay : MonoBehaviour
     {
         if (!gameStarted)
         {
-            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            if (startAction.WasPerformedThisFrame())
             {
                 HideStartScreen();
             }
@@ -54,7 +62,7 @@ public class ScoreDisplay : MonoBehaviour
 
         if (gameOver)
         {
-            if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
+            if (retryAction.WasPerformedThisFrame())
             {
                 Time.timeScale = 1f;
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
@@ -207,7 +215,7 @@ public class ScoreDisplay : MonoBehaviour
             gameOverText.color = Color.white;
         }
 
-        if (scoreText != null) scoreText.gameObject.SetActive(false);
+        if (scoreText != null) scoreText.enabled = false;
 
         string performanceNote = GetPerformanceNote();
         gameOverText.text =
@@ -217,6 +225,7 @@ public class ScoreDisplay : MonoBehaviour
             $"Dodged: {GameStats.Instance.ObstaclesDodged}\n" +
             $"Hit: {GameStats.Instance.ObstaclesHit}\n" +
             $"Spawned: {GameStats.Instance.ObstaclesSpawned}\n" +
+            $"Max Focus Streak: {Mathf.CeilToInt(GameStats.Instance.GetMaxStreakAtTime(Time.unscaledTime))}s\n" +
             $"{performanceNote}\n" +
             $"Press R to Retry";
     }
@@ -227,13 +236,13 @@ public class ScoreDisplay : MonoBehaviour
         int dodged = GameStats.Instance.ObstaclesDodged;
         int hit = GameStats.Instance.ObstaclesHit;
 
-        if (spawned <= 0) return "Performance: Getting started — you can do this.";
+        if (spawned <= 0) return "Performance: Getting started - you can do this.";
 
         float dodgeRate = spawned > 0 ? (float)dodged / spawned : 0f;
 
-        if (dodgeRate >= 0.8f && hit <= 2) return "Performance: Focus strong — excellent dodging.";
-        if (dodgeRate >= 0.6f) return "Performance: Steady focus — nice control.";
-        if (dodgeRate >= 0.4f) return "Performance: Warming up — keep the rhythm.";
-        return "Performance: Tough run — try shorter bursts.";
+        if (dodgeRate >= 0.8f && hit <= 2) return "Performance: Focus strong - excellent dodging.";
+        if (dodgeRate >= 0.6f) return "Performance: Steady focus - nice control.";
+        if (dodgeRate >= 0.4f) return "Performance: Warming up - keep the rhythm.";
+        return "Performance: Tough run - try shorter bursts.";
     }
 }
