@@ -16,6 +16,9 @@ public class ScoreDisplay : MonoBehaviour
     float startTime;
     GameObject gameOverPanel;
     TMP_Text gameOverText;
+    GameObject startPanel;
+    TMP_Text startText;
+    bool gameStarted;
 
     void Awake()
     {
@@ -29,7 +32,7 @@ public class ScoreDisplay : MonoBehaviour
 
     void Start()
     {
-        startTime = Time.unscaledTime;
+        ShowStartScreen();
         UpdateScoreText();
     }
 
@@ -40,6 +43,15 @@ public class ScoreDisplay : MonoBehaviour
     
     void Update()
     {
+        if (!gameStarted)
+        {
+            if (Keyboard.current != null && Keyboard.current.spaceKey.wasPressedThisFrame)
+            {
+                HideStartScreen();
+            }
+            return;
+        }
+
         if (gameOver)
         {
             if (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame)
@@ -103,6 +115,57 @@ public class ScoreDisplay : MonoBehaviour
     void UpdateScoreText(int score)
     {
         scoreText.text = $"Score: {score}";
+    }
+
+    void ShowStartScreen()
+    {
+        gameStarted = false;
+        Time.timeScale = 0f;
+
+        Canvas canvas = GetComponentInParent<Canvas>();
+        if (canvas == null)
+        {
+            return;
+        }
+
+        startPanel = new GameObject("StartPanel");
+        startPanel.transform.SetParent(canvas.transform, false);
+
+        RectTransform panelRect = startPanel.AddComponent<RectTransform>();
+        panelRect.anchorMin = Vector2.zero;
+        panelRect.anchorMax = Vector2.one;
+        panelRect.offsetMin = Vector2.zero;
+        panelRect.offsetMax = Vector2.zero;
+
+        Image panelImage = startPanel.AddComponent<Image>();
+        panelImage.color = new Color(0f, 0f, 0f, 0.75f);
+
+        GameObject textObj = new GameObject("StartText");
+        textObj.transform.SetParent(startPanel.transform, false);
+
+        RectTransform textRect = textObj.AddComponent<RectTransform>();
+        textRect.anchorMin = new Vector2(0.5f, 0.5f);
+        textRect.anchorMax = new Vector2(0.5f, 0.5f);
+        textRect.anchoredPosition = Vector2.zero;
+        textRect.sizeDelta = new Vector2(700f, 400f);
+
+        startText = textObj.AddComponent<TextMeshProUGUI>();
+        startText.font = scoreText.font;
+        startText.fontSize = scoreText.fontSize + 10f;
+        startText.alignment = TextAlignmentOptions.Center;
+        startText.color = Color.white;
+        startText.text = "Ready?\nPress SPACE to Start";
+    }
+
+    void HideStartScreen()
+    {
+        gameStarted = true;
+        Time.timeScale = 1f;
+        startTime = Time.unscaledTime;
+        if (startPanel != null)
+        {
+            startPanel.SetActive(false);
+        }
     }
 
     void ShowGameOverScreen()
